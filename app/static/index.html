@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MarketGen — Client Onboarding</title>
+<style>
+  :root {
+    --bg: #0f1420; --panel: #171e2e; --border: #2a3348; --text: #e7ecf5;
+    --muted: #93a1bd; --accent: #5b8def; --accent-dark: #3f6ad8;
+    --ok: #3ecf8e; --err: #ef5b5b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+  }
+  header { padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  header h1 { font-size: 1.1rem; margin: 0; }
+  header .badge { font-size: 0.75rem; color: var(--muted); border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 999px; }
+  main { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .steps { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .step-chip {
+    flex: 1; min-width: 70px; text-align: center; padding: 0.5rem 0.25rem; border-radius: 8px;
+    font-size: 0.72rem; border: 1px solid var(--border); color: var(--muted); cursor: pointer;
+  }
+  .step-chip.active { border-color: var(--accent); color: var(--text); background: #1c2740; }
+  .step-chip.complete { color: var(--ok); border-color: var(--ok); }
+  .progress-bar { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; margin-bottom: 1.25rem; }
+  .progress-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+  h2 { font-size: 1.25rem; margin-top: 0; }
+  .q-desc { color: var(--muted); font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 1.25rem; }
+  .field { margin-bottom: 1.25rem; }
+  .field label { display: block; font-size: 0.9rem; margin-bottom: 0.35rem; font-weight: 600; }
+  .field .help { color: var(--muted); font-size: 0.78rem; margin-bottom: 0.4rem; }
+  .field input[type=text], .field input[type=number], .field input[type=url],
+  .field input[type=email], .field textarea, .field select {
+    width: 100%; padding: 0.55rem 0.7rem; border-radius: 8px; border: 1px solid var(--border);
+    background: #0d1220; color: var(--text); font-size: 0.9rem; font-family: inherit;
+  }
+  .field textarea { min-height: 80px; resize: vertical; }
+  .field .options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .field .options label { display: flex; align-items: center; gap: 0.35rem; font-weight: 400; font-size: 0.85rem;
+    border: 1px solid var(--border); padding: 0.35rem 0.6rem; border-radius: 999px; cursor: pointer; }
+  .field .err { color: var(--err); font-size: 0.78rem; margin-top: 0.3rem; }
+  .field.has-err input, .field.has-err textarea, .field.has-err select { border-color: var(--err); }
+  .actions { display: flex; justify-content: space-between; gap: 0.75rem; margin-top: 1.5rem; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.9rem; font-weight: 600; }
+  button.primary { background: var(--accent); color: white; }
+  button.primary:hover { background: var(--accent-dark); }
+  button.secondary { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .banner { padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem; }
+  .banner.err { background: #3a1b1e; color: #ff9b9b; border: 1px solid #5a2a2e; }
+  .banner.ok { background: #12301f; color: #7be3ab; border: 1px solid #1e4a30; }
+  .setup input { padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border); background: #0d1220; color: var(--text); width: 100%; margin-bottom: 0.6rem; }
+  .post-card { border: 1px solid var(--border); border-radius: 10px; padding: 1rem; margin-bottom: 0.9rem; }
+  .post-card h3 { margin: 0 0 0.4rem; font-size: 0.95rem; text-transform: capitalize; }
+  .post-card .body { font-size: 0.85rem; color: var(--text); margin-bottom: 0.5rem; }
+  .post-card .cta { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+  .post-card .tags { color: var(--muted); font-size: 0.78rem; margin-top: 0.4rem; }
+  .post-card .publish-result { margin-top: 0.6rem; font-size: 0.78rem; color: var(--muted); border-top: 1px dashed var(--border); padding-top: 0.5rem; }
+  code { background: #0d1220; padding: 0.1rem 0.35rem; border-radius: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>MarketGen</h1>
+  <span class="badge" id="providerBadge">loading…</span>
+</header>
+<main>
+
+  <section class="panel" id="setupPanel">
+    <h2>Get started</h2>
+    <p class="q-desc">Create a demo tenant + client, or paste an existing API key. Everything here talks to the local API — no external services are contacted.</p>
+    <div class="setup" id="setupNew">
+      <label>Agency / workspace name</label>
+      <input id="tenantName" placeholder="Acme Marketing Co" />
+      <label>Your email</label>
+      <input id="actorEmail" placeholder="you@agency.com" />
+      <label>Client name (who this onboarding is for)</label>
+      <input id="clientName" placeholder="Brew & Bean Coffee Roasters" />
+      <button class="primary" id="btnCreateTenant">Create workspace &amp; start onboarding</button>
+    </div>
+    <div class="banner err" id="setupError" style="display:none"></div>
+  </section>
+
+  <section id="wizard" style="display:none">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="steps" id="stepChips"></div>
+    <div class="panel">
+      <div id="banner"></div>
+      <h2 id="stepTitle"></h2>
+      <p class="q-desc" id="stepDesc"></p>
+      <form id="stepForm"></form>
+      <div class="actions">
+        <button class="secondary" id="btnBack" type="button">Back</button>
+        <button class="primary" id="btnNext" type="button">Save &amp; continue</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="resultsPanel" style="display:none">
+    <h2>Campaign brief</h2>
+    <div id="briefSummary"></div>
+    <h3>Generated posts</h3>
+    <div id="postsList"></div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  const state = {
+    apiKey: null,
+    clientId: null,
+    sessionId: null,
+    questionsByStep: {},
+    steps: [],
+    currentStep: 1,
+    answers: {},
+  };
+
+  const el = (id) => document.getElementById(id);
+  const api = async (path, opts) => {
+    opts = opts || {};
+    const headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
+    if (state.apiKey) headers["X-API-Key"] = state.apiKey;
+    const res = await fetch(path, Object.assign({}, opts, { headers }));
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const err = new Error("request failed");
+      err.status = res.status;
+      err.body = body;
+      throw err;
+    }
+    return body;
+  };
+
+  async function loadConfig() {
+    const cfg = await api("/api/config");
+    el("providerBadge").textContent =
+      "provider: " + cfg.content_provider_active + (cfg.gemini_enabled ? " (gemini key present)" : " (offline stub)");
+  }
+
+  async function loadQuestions() {
+    const data = await api("/api/questions");
+    state.steps = data.steps;
+    state.questionsByStep = {};
+    data.questions.forEach((q) => {
+      (state.questionsByStep[q.step] = state.questionsByStep[q.step] || []).push(q);
+    });
+    Object.values(state.questionsByStep).forEach((list) => list.sort((a, b) => a.order - b.order));
+  }
+
+  el("btnCreateTenant").addEventListener("click", async () => {
+    el("setupError").style.display = "none";
+    const tenantName = el("tenantName").value.trim();
+    const actorEmail = el("actorEmail").value.trim();
+    const clientName = el("clientName").value.trim();
+    if (!tenantName || !actorEmail || !clientName) {
+      el("setupError").textContent = "All three fields are required.";
+      el("setupError").style.display = "block";
+      return;
+    }
+    try {
+      const slug = tenantName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") + "-" + Date.now().toString(36);
+      const tenantResp = await api("/api/tenants", {
+        method: "POST",
+        body: JSON.stringify({ slug, name: tenantName, actor_email: actorEmail }),
+      });
+      state.apiKey = tenantResp.api_key;
+      const client = await api("/api/clients", { method: "POST", body: JSON.stringify({ name: clientName }) });
+      state.clientId = client.id;
+      const session = await api("/api/onboarding/sessions", {
+        method: "POST",
+        body: JSON.stringify({ client_id: client.id }),
+      });
+      state.sessionId = session.id;
+      state.answers = session.answers;
+      state.currentStep = session.current_step;
+      await loadQuestions();
+      el("setupPanel").style.display = "none";
+      el("wizard").style.display = "block";
+      renderStep(state.currentStep);
+    } catch (e) {
+      el("setupError").textContent = "Setup failed: " + (e.body && e.body.detail ? JSON.stringify(e.body.detail) : e.message);
+      el("setupError").style.display = "block";
+    }
+  });
+
+  function isVisible(q, answers) {
+    const cond = q.show_if;
+    if (!cond) return true;
+    const dep = answers[cond.question_id];
+    switch (cond.op) {
+      case "truthy": return !!dep;
+      case "falsy": return !dep;
+      case "eq": return dep === cond.value;
+      case "ne": return dep !== cond.value;
+      case "includes": return Array.isArray(dep) && dep.includes(cond.value);
+      case "excludes": return !(Array.isArray(dep) && dep.includes(cond.value));
+      default: return true;
+    }
+  }
+
+  function renderStepChips() {
+    const wrap = el("stepChips");
+    wrap.innerHTML = "";
+    state.steps.forEach((s) => {
+      const chip = document.createElement("div");
+      chip.className = "step-chip" + (s.id === state.currentStep ? " active" : "");
+      chip.textContent = s.id + ". " + s.title;
+      wrap.appendChild(chip);
+    });
+  }
+
+  function fieldHtml(q, value) {
+    const req = q.required ? '<span style="color:var(--err)">*</span>' : "";
+    let input = "";
+    const name = q.id;
+    if (q.type === "text" || q.type === "url" || q.type === "email") {
+      input = `<input type="${q.type === 'text' ? 'text' : q.type}" name="${name}" value="${value ? String(value).replace(/"/g, '&quot;') : ""}" />`;
+    } else if (q.type === "textarea") {
+      input = `<textarea name="${name}">${value ? String(value) : ""}</textarea>`;
+    } else if (q.type === "number" || q.type === "scale") {
+      input = `<input type="number" name="${name}" value="${value !== undefined && value !== null ? value : ""}" ${q.min !== undefined ? `min="${q.min}"` : ""} ${q.max !== undefined ? `max="${q.max}"` : ""} />`;
+    } else if (q.type === "boolean") {
+      input = `<div class="options">
+        <label><input type="radio" name="${name}" value="true" ${value === true ? "checked" : ""}/> Yes</label>
+        <label><input type="radio" name="${name}" value="false" ${value === false ? "checked" : ""}/> No</label>
+      </div>`;
+    } else if (q.type === "single_select") {
+      const opts = q.options.map((o) => `<option value="${o.value}" ${value === o.value ? "selected" : ""}>${o.label}</option>`).join("");
+      input = `<select name="${name}"><option value="">Select…</option>${opts}</select>`;
+    } else if (q.type === "multi_select") {
+      const selected = Array.isArray(value) ? value : [];
+      const opts = q.options.map((o) => `<label><input type="checkbox" name="${name}" value="${o.value}" ${selected.includes(o.value) ? "checked" : ""}/> ${o.label}</label>`).join("");
+      input = `<div class="options">${opts}</div>`;
+    }
+    const help = q.help ? `<div class="help">${q.help}</div>` : "";
+    return `<div class="field" data-qid="${name}">
+      <label>${q.label} ${req}</label>
+      ${help}
+      ${input}
+      <div class="err" style="display:none"></div>
+    </div>`;
+  }
+
+  function renderStep(stepNum) {
+    state.currentStep = stepNum;
+    renderStepChips();
+    const step = state.steps.find((s) => s.id === stepNum);
+    el("stepTitle").textContent = "Step " + stepNum + " of 7 — " + step.title;
+    el("stepDesc").textContent = step.description;
+    el("banner").innerHTML = "";
+
+    const questions = (state.questionsByStep[stepNum] || []).filter((q) => isVisible(q, state.answers));
+    const form = el("stepForm");
+    form.innerHTML = questions.map((q) => fieldHtml(q, state.answers[q.id])).join("");
+
+    // re-render on change so branching questions appear/disappear live
+    form.querySelectorAll("input, select, textarea").forEach((elm) => {
+      elm.addEventListener("change", () => {
+        collectFormAnswers(false);
+        renderStep(stepNum);
+      });
+    });
+
+    el("progressFill").style.width = Math.round(((stepNum - 1) / 7) * 100) + "%";
+    el("btnBack").disabled = stepNum === 1;
+    el("btnNext").textContent = stepNum === 7 ? "Finish onboarding" : "Save & continue";
+  }
+
+  function collectFormAnswers(clearErrors) {
+    const form = el("stepForm");
+    const questions = (state.questionsByStep[state.currentStep] || []).filter((q) => isVisible(q, state.answers));
+    questions.forEach((q) => {
+      if (q.type === "multi_select") {
+        const vals = Array.from(form.querySelectorAll(`input[name="${q.id}"]:checked`)).map((i) => i.value);
+        state.answers[q.id] = vals;
+      } else if (q.type === "boolean") {
+        const checked = form.querySelector(`input[name="${q.id}"]:checked`);
+        state.answers[q.id] = checked ? checked.value === "true" : undefined;
+      } else if (q.type === "number" || q.type === "scale") {
+        const raw = form.querySelector(`[name="${q.id}"]`).value;
+        state.answers[q.id] = raw === "" ? undefined : Number(raw);
+      } else {
+        const raw = form.querySelector(`[name="${q.id}"]`).value;
+        state.answers[q.id] = raw === "" ? undefined : raw;
+      }
+      if (clearErrors) {
+        const fieldDiv = form.querySelector(`.field[data-qid="${q.id}"]`);
+        if (fieldDiv) { fieldDiv.classList.remove("has-err"); fieldDiv.querySelector(".err").style.display = "none"; }
+      }
+    });
+  }
+
+  el("btnBack").addEventListener("click", () => {
+    if (state.currentStep > 1) renderStep(state.currentStep - 1);
+  });
+
+  el("btnNext").addEventListener("click", async () => {
+    collectFormAnswers(true);
+    const questions = (state.questionsByStep[state.currentStep] || []).filter((q) => isVisible(q, state.answers));
+    const payload = {};
+    questions.forEach((q) => {
+      if (state.answers[q.id] !== undefined) payload[q.id] = state.answers[q.id];
+    });
+
+    try {
+      const resp = await api(`/api/onboarding/sessions/${state.sessionId}/steps/${state.currentStep}`, {
+        method: "POST",
+        body: JSON.stringify({ answers: payload, advance: true }),
+      });
+      state.answers = resp.answers;
+      if (resp.status === "completed") {
+        await runGeneration();
+        return;
+      }
+      renderStep(resp.current_step);
+    } catch (e) {
+      if (e.status === 422 && e.body && e.body.detail && e.body.detail.errors) {
+        const errors = e.body.detail.errors;
+        Object.keys(errors).forEach((qid) => {
+          const fieldDiv = document.querySelector(`.field[data-qid="${qid}"]`);
+          if (fieldDiv) {
+            fieldDiv.classList.add("has-err");
+            const errEl = fieldDiv.querySelector(".err");
+            errEl.textContent = errors[qid];
+            errEl.style.display = "block";
+          }
+        });
+        el("banner").innerHTML = `<div class="banner err">Please fix ${Object.keys(errors).length} field(s) before continuing.</div>`;
+      } else {
+        el("banner").innerHTML = `<div class="banner err">Save failed: ${e.message}</div>`;
+      }
+    }
+  });
+
+  async function runGeneration() {
+    el("wizard").style.display = "none";
+    el("resultsPanel").style.display = "block";
+    el("briefSummary").innerHTML = "<p>Generating campaign brief and per-channel posts…</p>";
+    try {
+      const result = await api(`/api/onboarding/sessions/${state.sessionId}/generate`, { method: "POST" });
+      const brief = result.brief.brief;
+      el("briefSummary").innerHTML = `
+        <p><strong>${brief.headline}</strong></p>
+        <p>${brief.summary}</p>
+        <p style="color:var(--muted); font-size:0.8rem;">provider: <code>${result.brief.provider}</code></p>
+      `;
+      const postsList = el("postsList");
+      postsList.innerHTML = "";
+      result.posts.forEach((post) => {
+        const card = document.createElement("div");
+        card.className = "post-card";
+        card.innerHTML = `
+          <h3>${post.channel} — ${post.format}</h3>
+          <div class="body">${post.headline}<br/>${post.body}</div>
+          <div class="cta">${post.call_to_action}</div>
+          <div class="tags">${(post.hashtags || []).join(" ")}</div>
+          <button class="secondary" data-post-id="${post.id}">Dry-run publish</button>
+          <div class="publish-result"></div>
+        `;
+        card.querySelector("button").addEventListener("click", async (ev) => {
+          const btn = ev.target;
+          const resultDiv = card.querySelector(".publish-result");
+          resultDiv.textContent = "Publishing (dry run)…";
+          const pub = await api("/api/publish", {
+            method: "POST",
+            body: JSON.stringify({ post_id: btn.getAttribute("data-post-id"), adapter: "dry_run" }),
+          });
+          resultDiv.textContent = `status: ${pub.status} — ${pub.detail.message || JSON.stringify(pub.detail)}`;
+        });
+        postsList.appendChild(card);
+      });
+    } catch (e) {
+      el("briefSummary").innerHTML = `<div class="banner err">Generation failed: ${e.message}</div>`;
+    }
+  }
+
+  loadConfig();
+})();
+</script>
+</body>
+</html>

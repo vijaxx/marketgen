@@ -1,0 +1,64 @@
+{
+  "name": "MarketGen - Scheduled Dry-Run Publish Check",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 6 }]
+        }
+      },
+      "id": "2f8a1e2e-2222-4a11-9a11-000000000001",
+      "name": "Every 6 hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.MARKETGEN_API_BASE}}/api/clients",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "2f8a1e2e-2222-4a11-9a11-000000000002",
+      "name": "List Clients (per tenant credential)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "marketgen-api-key",
+          "name": "MarketGen API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Placeholder for pulling this tenant's pending generated_posts and\n// calling POST /api/publish with adapter: 'dry_run' for each.\n// Intentionally left as reference logic -- see app/publishing/publisher.py\n// in the repo for why only dry_run is ever safe to call here.\nreturn items;"
+      },
+      "id": "2f8a1e2e-2222-4a11-9a11-000000000003",
+      "name": "Build Dry-Run Publish Batch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Every 6 hours": {
+      "main": [[{ "node": "List Clients (per tenant credential)", "type": "main", "index": 0 }]]
+    },
+    "List Clients (per tenant credential)": {
+      "main": [[{ "node": "Build Dry-Run Publish Batch", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "note": "Exported for reference only. Not executed by this repository's test suite. Demonstrates how a hosted n8n instance would poll MarketGen's API on a schedule; the workflow deliberately routes only through the dry_run publish adapter, never a live one."
+  },
+  "id": "marketgen-scheduled-publish-check",
+  "tags": [{ "name": "marketgen" }]
+}

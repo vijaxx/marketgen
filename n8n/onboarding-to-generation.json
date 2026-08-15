@@ -1,0 +1,111 @@
+{
+  "name": "MarketGen - Onboarding Completed -> Generate Campaign",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "marketgen/onboarding-completed",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "1f8a1e2e-1111-4a11-9a11-000000000001",
+      "name": "Webhook: Onboarding Completed",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "marketgen-onboarding-completed"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{$json.status}}",
+              "rightValue": "completed",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "1f8a1e2e-1111-4a11-9a11-000000000002",
+      "name": "IF status == completed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.MARKETGEN_API_BASE}}/api/onboarding/sessions/{{$json.session_id}}/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "1f8a1e2e-1111-4a11-9a11-000000000003",
+      "name": "Call MarketGen API: Generate Campaign",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 220],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "marketgen-api-key",
+          "name": "MarketGen API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "select": "channel",
+        "channelId": "={{$env.SLACK_APPROVAL_CHANNEL}}",
+        "text": "=New campaign brief ready for review: {{$json.brief.brief.headline}}"
+      },
+      "id": "1f8a1e2e-1111-4a11-9a11-000000000004",
+      "name": "Notify Slack: Brief Ready for Approval",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [900, 220],
+      "credentials": {
+        "slackApi": {
+          "id": "slack-marketgen",
+          "name": "MarketGen Slack Bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "1f8a1e2e-1111-4a11-9a11-000000000005",
+      "name": "No-op: Session Not Completed",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [680, 400]
+    }
+  ],
+  "connections": {
+    "Webhook: Onboarding Completed": {
+      "main": [[{ "node": "IF status == completed", "type": "main", "index": 0 }]]
+    },
+    "IF status == completed": {
+      "main": [
+        [{ "node": "Call MarketGen API: Generate Campaign", "type": "main", "index": 0 }],
+        [{ "node": "No-op: Session Not Completed", "type": "main", "index": 0 }]
+      ]
+    },
+    "Call MarketGen API: Generate Campaign": {
+      "main": [[{ "node": "Notify Slack: Brief Ready for Approval", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "note": "Exported for reference only. Not executed by this repository's test suite -- see README 'What requires live services'. Requires a live n8n instance, real Slack + MarketGen API credentials, and MARKETGEN_API_BASE / SLACK_APPROVAL_CHANNEL environment variables in n8n."
+  },
+  "id": "marketgen-onboarding-to-generation",
+  "tags": [{ "name": "marketgen" }]
+}

@@ -1,0 +1,1110 @@
+{
+  "version": "1.0.0",
+  "total_questions": 87,
+  "steps": [
+    {
+      "id": 1,
+      "key": "brand_foundations",
+      "title": "Brand Foundations",
+      "description": "Who the brand is, what it stands for, and the visual assets that already exist."
+    },
+    {
+      "id": 2,
+      "key": "offers",
+      "title": "Products & Offers",
+      "description": "What is actually being sold, at what price, and what makes it credible."
+    },
+    {
+      "id": 3,
+      "key": "audience",
+      "title": "Audience & Personas",
+      "description": "Who we are talking to, where they live, and what stops them from buying."
+    },
+    {
+      "id": 4,
+      "key": "voice",
+      "title": "Voice & Tone",
+      "description": "How the brand sounds, including hard constraints on wording."
+    },
+    {
+      "id": 5,
+      "key": "channels",
+      "title": "Channels & Cadence",
+      "description": "Which surfaces we publish to, how often, and who approves."
+    },
+    {
+      "id": 6,
+      "key": "goals",
+      "title": "Goals & Metrics",
+      "description": "What success means numerically over a defined horizon."
+    },
+    {
+      "id": 7,
+      "key": "constraints",
+      "title": "Competitors & Constraints",
+      "description": "The competitive frame and the legal / editorial guardrails."
+    }
+  ],
+  "questions": [
+    {
+      "id": "brand_legal_name",
+      "step": 1,
+      "order": 1,
+      "label": "Registered legal name of the business",
+      "help": "Used on invoices and compliance disclaimers, not necessarily in the copy.",
+      "type": "text",
+      "required": true,
+      "min_length": 2,
+      "max_length": 160
+    },
+    {
+      "id": "brand_display_name",
+      "step": 1,
+      "order": 2,
+      "label": "Brand name as it should appear in posts",
+      "type": "text",
+      "required": true,
+      "min_length": 2,
+      "max_length": 80
+    },
+    {
+      "id": "brand_website",
+      "step": 1,
+      "order": 3,
+      "label": "Primary website URL",
+      "type": "url",
+      "required": true
+    },
+    {
+      "id": "brand_founded_year",
+      "step": 1,
+      "order": 4,
+      "label": "Year founded",
+      "type": "number",
+      "required": false,
+      "min": 1800,
+      "max": 2026
+    },
+    {
+      "id": "brand_industry",
+      "step": 1,
+      "order": 5,
+      "label": "Industry",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "saas", "label": "SaaS / software" },
+        { "value": "ecommerce", "label": "E-commerce" },
+        { "value": "d2c", "label": "D2C consumer brand" },
+        { "value": "agency", "label": "Agency / services" },
+        { "value": "education", "label": "Education / edtech" },
+        { "value": "healthcare", "label": "Healthcare" },
+        { "value": "fintech", "label": "Fintech" },
+        { "value": "hospitality", "label": "Hospitality / travel" },
+        { "value": "nonprofit", "label": "Non-profit" },
+        { "value": "manufacturing", "label": "Manufacturing / B2B industrial" },
+        { "value": "other", "label": "Other" }
+      ]
+    },
+    {
+      "id": "brand_industry_other",
+      "step": 1,
+      "order": 6,
+      "label": "Describe the industry",
+      "type": "text",
+      "required": true,
+      "max_length": 120,
+      "show_if": { "question_id": "brand_industry", "op": "eq", "value": "other" }
+    },
+    {
+      "id": "brand_one_liner",
+      "step": 1,
+      "order": 7,
+      "label": "One-line description of the brand",
+      "help": "Aim for something a stranger understands in one read.",
+      "type": "text",
+      "required": true,
+      "min_length": 10,
+      "max_length": 140
+    },
+    {
+      "id": "brand_mission",
+      "step": 1,
+      "order": 8,
+      "label": "Mission statement",
+      "type": "textarea",
+      "required": true,
+      "min_length": 20,
+      "max_length": 600
+    },
+    {
+      "id": "brand_values",
+      "step": 1,
+      "order": 9,
+      "label": "Core brand values",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 2,
+      "max_select": 5,
+      "options": [
+        { "value": "innovation", "label": "Innovation" },
+        { "value": "trust", "label": "Trust" },
+        { "value": "craftsmanship", "label": "Craftsmanship" },
+        { "value": "sustainability", "label": "Sustainability" },
+        { "value": "affordability", "label": "Affordability" },
+        { "value": "luxury", "label": "Luxury" },
+        { "value": "community", "label": "Community" },
+        { "value": "speed", "label": "Speed" },
+        { "value": "transparency", "label": "Transparency" },
+        { "value": "playfulness", "label": "Playfulness" }
+      ]
+    },
+    {
+      "id": "brand_has_style_guide",
+      "step": 1,
+      "order": 10,
+      "label": "Is there an existing brand style guide?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "brand_style_guide_url",
+      "step": 1,
+      "order": 11,
+      "label": "Link to the style guide",
+      "type": "url",
+      "required": true,
+      "show_if": { "question_id": "brand_has_style_guide", "op": "truthy" }
+    },
+    {
+      "id": "brand_primary_color",
+      "step": 1,
+      "order": 12,
+      "label": "Primary brand colour (hex)",
+      "type": "text",
+      "required": false,
+      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+      "pattern_message": "Use a hex colour such as #1B4DFF."
+    },
+    {
+      "id": "brand_logo_url",
+      "step": 1,
+      "order": 13,
+      "label": "Logo file URL",
+      "type": "url",
+      "required": false
+    },
+
+    {
+      "id": "offer_type",
+      "step": 2,
+      "order": 1,
+      "label": "What is primarily being sold?",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "physical_product", "label": "Physical product" },
+        { "value": "digital_product", "label": "Digital product" },
+        { "value": "subscription", "label": "Subscription" },
+        { "value": "service", "label": "Service engagement" },
+        { "value": "marketplace", "label": "Marketplace / aggregator" },
+        { "value": "saas", "label": "SaaS seats" }
+      ]
+    },
+    {
+      "id": "offer_catalog_size",
+      "step": 2,
+      "order": 2,
+      "label": "How many distinct SKUs / plans are in the catalogue?",
+      "type": "number",
+      "required": true,
+      "min": 1,
+      "max": 100000
+    },
+    {
+      "id": "offer_flagship_name",
+      "step": 2,
+      "order": 3,
+      "label": "Name of the flagship offer",
+      "type": "text",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "offer_flagship_description",
+      "step": 2,
+      "order": 4,
+      "label": "Describe the flagship offer",
+      "type": "textarea",
+      "required": true,
+      "min_length": 30,
+      "max_length": 900
+    },
+    {
+      "id": "offer_price_band",
+      "step": 2,
+      "order": 5,
+      "label": "Price positioning",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "budget", "label": "Budget" },
+        { "value": "mid", "label": "Mid-market" },
+        { "value": "premium", "label": "Premium" },
+        { "value": "luxury", "label": "Luxury" }
+      ]
+    },
+    {
+      "id": "offer_avg_price_inr",
+      "step": 2,
+      "order": 6,
+      "label": "Average order value (INR)",
+      "help": "Skipped for marketplaces, where basket value is set by sellers.",
+      "type": "number",
+      "required": true,
+      "min": 1,
+      "max": 100000000,
+      "show_if": { "question_id": "offer_type", "op": "ne", "value": "marketplace" }
+    },
+    {
+      "id": "offer_usp",
+      "step": 2,
+      "order": 7,
+      "label": "Unique selling proposition",
+      "type": "textarea",
+      "required": true,
+      "min_length": 20,
+      "max_length": 600
+    },
+    {
+      "id": "offer_proof_points",
+      "step": 2,
+      "order": 8,
+      "label": "What credibility signals exist?",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "awards", "label": "Awards" },
+        { "value": "certifications", "label": "Certifications" },
+        { "value": "testimonials", "label": "Customer testimonials" },
+        { "value": "case_studies", "label": "Case studies" },
+        { "value": "press", "label": "Press coverage" },
+        { "value": "ratings", "label": "Public ratings / reviews" },
+        { "value": "none", "label": "None yet" }
+      ]
+    },
+    {
+      "id": "offer_proof_details",
+      "step": 2,
+      "order": 9,
+      "label": "Give the specifics of those proof points",
+      "help": "Named awards, review counts, publication names. Vague claims get dropped from copy.",
+      "type": "textarea",
+      "required": true,
+      "max_length": 900,
+      "show_if": { "question_id": "offer_proof_points", "op": "excludes", "value": "none" }
+    },
+    {
+      "id": "offer_has_seasonality",
+      "step": 2,
+      "order": 10,
+      "label": "Does demand have a strong seasonal pattern?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "offer_peak_seasons",
+      "step": 2,
+      "order": 11,
+      "label": "Peak periods",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "q1", "label": "Jan-Mar" },
+        { "value": "q2", "label": "Apr-Jun" },
+        { "value": "q3", "label": "Jul-Sep" },
+        { "value": "q4", "label": "Oct-Dec" },
+        { "value": "festive", "label": "Festive season" },
+        { "value": "back_to_school", "label": "Back to school" },
+        { "value": "financial_year_end", "label": "Financial year end" }
+      ],
+      "show_if": { "question_id": "offer_has_seasonality", "op": "truthy" }
+    },
+    {
+      "id": "offer_launch_planned",
+      "step": 2,
+      "order": 12,
+      "label": "Is a launch planned in the next 90 days?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "offer_launch_date",
+      "step": 2,
+      "order": 13,
+      "label": "Planned launch date (YYYY-MM-DD)",
+      "type": "text",
+      "required": true,
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "pattern_message": "Use the format YYYY-MM-DD.",
+      "show_if": { "question_id": "offer_launch_planned", "op": "truthy" }
+    },
+
+    {
+      "id": "audience_primary_segment",
+      "step": 3,
+      "order": 1,
+      "label": "Name the primary audience segment",
+      "help": "For example: 'first-time home bakers in metro India'.",
+      "type": "text",
+      "required": true,
+      "min_length": 5,
+      "max_length": 160
+    },
+    {
+      "id": "audience_age_min",
+      "step": 3,
+      "order": 2,
+      "label": "Youngest age in the core audience",
+      "type": "number",
+      "required": true,
+      "min": 13,
+      "max": 100
+    },
+    {
+      "id": "audience_age_max",
+      "step": 3,
+      "order": 3,
+      "label": "Oldest age in the core audience",
+      "type": "number",
+      "required": true,
+      "min": 13,
+      "max": 100,
+      "gte_question": "audience_age_min"
+    },
+    {
+      "id": "audience_genders",
+      "step": 3,
+      "order": 4,
+      "label": "Gender skew of the audience",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "women", "label": "Women" },
+        { "value": "men", "label": "Men" },
+        { "value": "nonbinary", "label": "Non-binary" },
+        { "value": "all", "label": "No meaningful skew" }
+      ]
+    },
+    {
+      "id": "audience_geographies",
+      "step": 3,
+      "order": 5,
+      "label": "Where does the audience live?",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "india_metro", "label": "India - metro cities" },
+        { "value": "india_tier2", "label": "India - tier 2" },
+        { "value": "india_tier3", "label": "India - tier 3 and rural" },
+        { "value": "sea", "label": "South-East Asia" },
+        { "value": "middle_east", "label": "Middle East" },
+        { "value": "europe", "label": "Europe" },
+        { "value": "north_america", "label": "North America" },
+        { "value": "other", "label": "Other" }
+      ]
+    },
+    {
+      "id": "audience_geo_other",
+      "step": 3,
+      "order": 6,
+      "label": "Which other regions?",
+      "type": "text",
+      "required": true,
+      "max_length": 200,
+      "show_if": { "question_id": "audience_geographies", "op": "includes", "value": "other" }
+    },
+    {
+      "id": "audience_languages",
+      "step": 3,
+      "order": 7,
+      "label": "Languages the audience reads",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "en", "label": "English" },
+        { "value": "hi", "label": "Hindi" },
+        { "value": "te", "label": "Telugu" },
+        { "value": "ta", "label": "Tamil" },
+        { "value": "kn", "label": "Kannada" },
+        { "value": "mr", "label": "Marathi" },
+        { "value": "bn", "label": "Bengali" },
+        { "value": "ml", "label": "Malayalam" },
+        { "value": "gu", "label": "Gujarati" }
+      ]
+    },
+    {
+      "id": "audience_income_band",
+      "step": 3,
+      "order": 8,
+      "label": "Household income band",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "under_5l", "label": "Under 5L INR / year" },
+        { "value": "5l_15l", "label": "5L - 15L INR / year" },
+        { "value": "15l_35l", "label": "15L - 35L INR / year" },
+        { "value": "over_35l", "label": "Over 35L INR / year" },
+        { "value": "unknown", "label": "Not known" }
+      ]
+    },
+    {
+      "id": "audience_pain_points",
+      "step": 3,
+      "order": 9,
+      "label": "Top pain points this audience feels",
+      "type": "textarea",
+      "required": true,
+      "min_length": 20,
+      "max_length": 900
+    },
+    {
+      "id": "audience_buying_triggers",
+      "step": 3,
+      "order": 10,
+      "label": "What triggers a purchase?",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "discount", "label": "Discount or offer" },
+        { "value": "peer_recommendation", "label": "Peer recommendation" },
+        { "value": "life_event", "label": "Life event" },
+        { "value": "seasonal", "label": "Seasonal need" },
+        { "value": "competitor_failure", "label": "Bad experience elsewhere" },
+        { "value": "content_discovery", "label": "Discovered via content" },
+        { "value": "budget_cycle", "label": "Budget cycle (B2B)" }
+      ]
+    },
+    {
+      "id": "audience_objections",
+      "step": 3,
+      "order": 11,
+      "label": "Most common objections before buying",
+      "type": "textarea",
+      "required": true,
+      "min_length": 20,
+      "max_length": 900
+    },
+    {
+      "id": "audience_has_secondary_segment",
+      "step": 3,
+      "order": 12,
+      "label": "Is there a meaningful secondary segment?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "audience_secondary_segment",
+      "step": 3,
+      "order": 13,
+      "label": "Describe the secondary segment",
+      "type": "textarea",
+      "required": true,
+      "min_length": 10,
+      "max_length": 600,
+      "show_if": { "question_id": "audience_has_secondary_segment", "op": "truthy" }
+    },
+
+    {
+      "id": "tone_primary",
+      "step": 4,
+      "order": 1,
+      "label": "Primary tone",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "professional", "label": "Professional" },
+        { "value": "friendly", "label": "Friendly" },
+        { "value": "witty", "label": "Witty" },
+        { "value": "bold", "label": "Bold" },
+        { "value": "inspirational", "label": "Inspirational" },
+        { "value": "empathetic", "label": "Empathetic" },
+        { "value": "authoritative", "label": "Authoritative" }
+      ]
+    },
+    {
+      "id": "tone_secondary",
+      "step": 4,
+      "order": 2,
+      "label": "Secondary tone",
+      "type": "single_select",
+      "required": false,
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "professional", "label": "Professional" },
+        { "value": "friendly", "label": "Friendly" },
+        { "value": "witty", "label": "Witty" },
+        { "value": "bold", "label": "Bold" },
+        { "value": "inspirational", "label": "Inspirational" },
+        { "value": "empathetic", "label": "Empathetic" },
+        { "value": "authoritative", "label": "Authoritative" }
+      ]
+    },
+    {
+      "id": "tone_formality",
+      "step": 4,
+      "order": 3,
+      "label": "Formality (1 = very casual, 5 = very formal)",
+      "type": "scale",
+      "required": true,
+      "min": 1,
+      "max": 5
+    },
+    {
+      "id": "tone_humour",
+      "step": 4,
+      "order": 4,
+      "label": "Humour (1 = none, 5 = comedic)",
+      "type": "scale",
+      "required": true,
+      "min": 1,
+      "max": 5
+    },
+    {
+      "id": "tone_emoji_usage",
+      "step": 4,
+      "order": 5,
+      "label": "Emoji usage",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "never", "label": "Never" },
+        { "value": "sparing", "label": "Sparing" },
+        { "value": "moderate", "label": "Moderate" },
+        { "value": "heavy", "label": "Heavy" }
+      ]
+    },
+    {
+      "id": "tone_emoji_allowlist",
+      "step": 4,
+      "order": 6,
+      "label": "Emoji that are on-brand",
+      "help": "Comma separated. Anything outside this list is avoided.",
+      "type": "text",
+      "required": false,
+      "max_length": 200,
+      "show_if": { "question_id": "tone_emoji_usage", "op": "ne", "value": "never" }
+    },
+    {
+      "id": "tone_person",
+      "step": 4,
+      "order": 7,
+      "label": "Grammatical person",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "first_singular", "label": "First person singular (I)" },
+        { "value": "first_plural", "label": "First person plural (we)" },
+        { "value": "second", "label": "Second person (you)" },
+        { "value": "third", "label": "Third person (the brand)" }
+      ]
+    },
+    {
+      "id": "tone_banned_words",
+      "step": 4,
+      "order": 8,
+      "label": "Words and phrases that must never appear",
+      "help": "Comma separated. Enforced as a hard filter on generated copy.",
+      "type": "textarea",
+      "required": false,
+      "max_length": 600
+    },
+    {
+      "id": "tone_required_phrases",
+      "step": 4,
+      "order": 9,
+      "label": "Phrases that should appear regularly",
+      "type": "textarea",
+      "required": false,
+      "max_length": 600
+    },
+    {
+      "id": "tone_reading_level",
+      "step": 4,
+      "order": 10,
+      "label": "Target reading level",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "simple", "label": "Simple (grade 6)" },
+        { "value": "standard", "label": "Standard (grade 9)" },
+        { "value": "advanced", "label": "Advanced (grade 12+)" }
+      ]
+    },
+    {
+      "id": "tone_cta_style",
+      "step": 4,
+      "order": 11,
+      "label": "Call-to-action style",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "direct", "label": "Direct imperative" },
+        { "value": "soft", "label": "Soft invitation" },
+        { "value": "question", "label": "Question" },
+        { "value": "urgency", "label": "Urgency / scarcity" }
+      ]
+    },
+    {
+      "id": "tone_sample_copy",
+      "step": 4,
+      "order": 12,
+      "label": "Paste a piece of copy that sounds right",
+      "type": "textarea",
+      "required": false,
+      "max_length": 1500
+    },
+
+    {
+      "id": "channels_active",
+      "step": 5,
+      "order": 1,
+      "label": "Which channels are in scope?",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "instagram", "label": "Instagram" },
+        { "value": "linkedin", "label": "LinkedIn" },
+        { "value": "facebook", "label": "Facebook" },
+        { "value": "x", "label": "X / Twitter" },
+        { "value": "youtube", "label": "YouTube" },
+        { "value": "pinterest", "label": "Pinterest" },
+        { "value": "email", "label": "Email" },
+        { "value": "blog", "label": "Blog" },
+        { "value": "whatsapp", "label": "WhatsApp broadcast" }
+      ]
+    },
+    {
+      "id": "channel_instagram_handle",
+      "step": 5,
+      "order": 2,
+      "label": "Instagram handle",
+      "type": "text",
+      "required": true,
+      "max_length": 60,
+      "show_if": { "question_id": "channels_active", "op": "includes", "value": "instagram" }
+    },
+    {
+      "id": "channel_instagram_posts_per_week",
+      "step": 5,
+      "order": 3,
+      "label": "Instagram posts per week",
+      "type": "number",
+      "required": true,
+      "min": 0,
+      "max": 21,
+      "show_if": { "question_id": "channels_active", "op": "includes", "value": "instagram" }
+    },
+    {
+      "id": "channel_instagram_formats",
+      "step": 5,
+      "order": 4,
+      "label": "Instagram formats to produce",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "reel", "label": "Reel" },
+        { "value": "carousel", "label": "Carousel" },
+        { "value": "static", "label": "Static post" },
+        { "value": "story", "label": "Story" }
+      ],
+      "show_if": { "question_id": "channels_active", "op": "includes", "value": "instagram" }
+    },
+    {
+      "id": "channel_linkedin_page_url",
+      "step": 5,
+      "order": 5,
+      "label": "LinkedIn page URL",
+      "type": "url",
+      "required": true,
+      "show_if": { "question_id": "channels_active", "op": "includes", "value": "linkedin" }
+    },
+    {
+      "id": "channel_linkedin_posts_per_week",
+      "step": 5,
+      "order": 6,
+      "label": "LinkedIn posts per week",
+      "type": "number",
+      "required": true,
+      "min": 0,
+      "max": 14,
+      "show_if": { "question_id": "channels_active", "op": "includes", "value": "linkedin" }
+    },
+    {
+      "id": "channel_linkedin_content_pillars",
+      "step": 5,
+      "order": 7,
+      "label": "LinkedIn content pillars",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "max_select": 4,
+      "options": [
+        { "value": "thought_leadership", "label": "Thought leadership" },
+        { "value": "product", "label": "Product updates" },
+        { "value": "hiring", "label": "Hiring / culture" },
+        { "value": "customer_stories", "label": "Customer stories" },
+        { "value": "industry_news", "label": "Industry news" }
+      ],
+      "show_if": { "question_id": "channels_active", "op": "includes", "value": "linkedin" }
+    },
+    {
+      "id": "channel_email_list_size",
+      "step": 5,
+      "order": 8,
+      "label": "Email list size",
+      "type": "number",
+      "required": true,
+      "min": 0,
+      "max": 100000000,
+      "show_if": { "question_id": "channels_active", "op": "includes", "value": "email" }
+    },
+    {
+      "id": "channel_blog_cadence",
+      "step": 5,
+      "order": 9,
+      "label": "Blog publishing cadence",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "weekly", "label": "Weekly" },
+        { "value": "biweekly", "label": "Every two weeks" },
+        { "value": "monthly", "label": "Monthly" },
+        { "value": "ad_hoc", "label": "Ad hoc" }
+      ],
+      "show_if": { "question_id": "channels_active", "op": "includes", "value": "blog" }
+    },
+    {
+      "id": "content_approval_required",
+      "step": 5,
+      "order": 10,
+      "label": "Does generated content need human approval before publishing?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "content_approver_email",
+      "step": 5,
+      "order": 11,
+      "label": "Approver email address",
+      "type": "email",
+      "required": true,
+      "show_if": { "question_id": "content_approval_required", "op": "truthy" }
+    },
+    {
+      "id": "content_publishing_timezone",
+      "step": 5,
+      "order": 12,
+      "label": "Publishing timezone",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "Asia/Kolkata", "label": "Asia/Kolkata" },
+        { "value": "Asia/Dubai", "label": "Asia/Dubai" },
+        { "value": "Asia/Singapore", "label": "Asia/Singapore" },
+        { "value": "Europe/London", "label": "Europe/London" },
+        { "value": "America/New_York", "label": "America/New_York" },
+        { "value": "UTC", "label": "UTC" }
+      ]
+    },
+
+    {
+      "id": "goal_primary",
+      "step": 6,
+      "order": 1,
+      "label": "Primary marketing goal",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "awareness", "label": "Awareness" },
+        { "value": "engagement", "label": "Engagement" },
+        { "value": "lead_gen", "label": "Lead generation" },
+        { "value": "sales", "label": "Direct sales" },
+        { "value": "retention", "label": "Retention" },
+        { "value": "recruitment", "label": "Recruitment / employer brand" }
+      ]
+    },
+    {
+      "id": "goal_secondary",
+      "step": 6,
+      "order": 2,
+      "label": "Secondary goals",
+      "type": "multi_select",
+      "required": false,
+      "max_select": 3,
+      "options": [
+        { "value": "awareness", "label": "Awareness" },
+        { "value": "engagement", "label": "Engagement" },
+        { "value": "lead_gen", "label": "Lead generation" },
+        { "value": "sales", "label": "Direct sales" },
+        { "value": "retention", "label": "Retention" },
+        { "value": "recruitment", "label": "Recruitment / employer brand" }
+      ]
+    },
+    {
+      "id": "goal_horizon_days",
+      "step": 6,
+      "order": 3,
+      "label": "Goal horizon in days",
+      "type": "number",
+      "required": true,
+      "min": 30,
+      "max": 365
+    },
+    {
+      "id": "goal_target_metric",
+      "step": 6,
+      "order": 4,
+      "label": "The single metric that defines success",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "followers", "label": "Followers" },
+        { "value": "reach", "label": "Reach" },
+        { "value": "ctr", "label": "Click-through rate" },
+        { "value": "cpl", "label": "Cost per lead" },
+        { "value": "roas", "label": "ROAS" },
+        { "value": "revenue", "label": "Revenue" },
+        { "value": "signups", "label": "Signups" }
+      ]
+    },
+    {
+      "id": "goal_target_value",
+      "step": 6,
+      "order": 5,
+      "label": "Target value for that metric",
+      "type": "number",
+      "required": true,
+      "min": 0
+    },
+    {
+      "id": "goal_baseline_value",
+      "step": 6,
+      "order": 6,
+      "label": "Current baseline value for that metric",
+      "type": "number",
+      "required": true,
+      "min": 0
+    },
+    {
+      "id": "goal_budget_band_inr",
+      "step": 6,
+      "order": 7,
+      "label": "Monthly marketing budget band",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "under_50k", "label": "Under 50k INR" },
+        { "value": "50k_2l", "label": "50k - 2L INR" },
+        { "value": "2l_10l", "label": "2L - 10L INR" },
+        { "value": "over_10l", "label": "Over 10L INR" }
+      ]
+    },
+    {
+      "id": "goal_paid_media",
+      "step": 6,
+      "order": 8,
+      "label": "Is paid media part of the plan?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "goal_paid_channels",
+      "step": 6,
+      "order": 9,
+      "label": "Paid channels in use",
+      "type": "multi_select",
+      "required": true,
+      "min_select": 1,
+      "options": [
+        { "value": "meta_ads", "label": "Meta Ads" },
+        { "value": "google_ads", "label": "Google Ads" },
+        { "value": "linkedin_ads", "label": "LinkedIn Ads" },
+        { "value": "youtube_ads", "label": "YouTube Ads" },
+        { "value": "influencer", "label": "Influencer partnerships" }
+      ],
+      "show_if": { "question_id": "goal_paid_media", "op": "truthy" }
+    },
+    {
+      "id": "goal_attribution_tool",
+      "step": 6,
+      "order": 10,
+      "label": "Analytics / attribution tool",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "ga4", "label": "Google Analytics 4" },
+        { "value": "mixpanel", "label": "Mixpanel" },
+        { "value": "posthog", "label": "PostHog" },
+        { "value": "none", "label": "None" },
+        { "value": "other", "label": "Other" }
+      ]
+    },
+    {
+      "id": "goal_attribution_other",
+      "step": 6,
+      "order": 11,
+      "label": "Which tool?",
+      "type": "text",
+      "required": true,
+      "max_length": 120,
+      "show_if": { "question_id": "goal_attribution_tool", "op": "eq", "value": "other" }
+    },
+    {
+      "id": "goal_reporting_cadence",
+      "step": 6,
+      "order": 12,
+      "label": "Reporting cadence",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "weekly", "label": "Weekly" },
+        { "value": "fortnightly", "label": "Fortnightly" },
+        { "value": "monthly", "label": "Monthly" },
+        { "value": "quarterly", "label": "Quarterly" }
+      ]
+    },
+
+    {
+      "id": "comp_primary_name",
+      "step": 7,
+      "order": 1,
+      "label": "Closest competitor",
+      "type": "text",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "comp_primary_url",
+      "step": 7,
+      "order": 2,
+      "label": "Competitor website",
+      "type": "url",
+      "required": true
+    },
+    {
+      "id": "comp_secondary_names",
+      "step": 7,
+      "order": 3,
+      "label": "Other competitors worth watching",
+      "type": "textarea",
+      "required": false,
+      "max_length": 600
+    },
+    {
+      "id": "comp_differentiator",
+      "step": 7,
+      "order": 4,
+      "label": "What do we do that the competitor cannot claim?",
+      "type": "textarea",
+      "required": true,
+      "min_length": 20,
+      "max_length": 900
+    },
+    {
+      "id": "comp_watch_keywords",
+      "step": 7,
+      "order": 5,
+      "label": "Keywords to monitor",
+      "type": "textarea",
+      "required": false,
+      "max_length": 600
+    },
+    {
+      "id": "constraint_regulated_industry",
+      "step": 7,
+      "order": 6,
+      "label": "Is the business in a regulated industry?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "constraint_regulator",
+      "step": 7,
+      "order": 7,
+      "label": "Which regulator applies?",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "sebi", "label": "SEBI" },
+        { "value": "irdai", "label": "IRDAI" },
+        { "value": "rbi", "label": "RBI" },
+        { "value": "fssai", "label": "FSSAI" },
+        { "value": "cdsco", "label": "CDSCO" },
+        { "value": "mci", "label": "NMC / MCI" },
+        { "value": "other", "label": "Other" }
+      ],
+      "show_if": { "question_id": "constraint_regulated_industry", "op": "truthy" }
+    },
+    {
+      "id": "constraint_disclaimer_text",
+      "step": 7,
+      "order": 8,
+      "label": "Mandatory disclaimer text",
+      "help": "Appended verbatim to every generated post.",
+      "type": "textarea",
+      "required": true,
+      "min_length": 5,
+      "max_length": 600,
+      "show_if": { "question_id": "constraint_regulated_industry", "op": "truthy" }
+    },
+    {
+      "id": "constraint_banned_topics",
+      "step": 7,
+      "order": 9,
+      "label": "Topics the brand must never post about",
+      "type": "textarea",
+      "required": false,
+      "max_length": 600
+    },
+    {
+      "id": "constraint_image_rights",
+      "step": 7,
+      "order": 10,
+      "label": "Image sourcing policy",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        { "value": "stock_only", "label": "Licensed stock only" },
+        { "value": "owned_only", "label": "Owned photography only" },
+        { "value": "ai_generated_ok", "label": "AI-generated imagery allowed" },
+        { "value": "mixed", "label": "Mixed" }
+      ]
+    },
+    {
+      "id": "constraint_ai_disclosure",
+      "step": 7,
+      "order": 11,
+      "label": "Must AI-assisted content be disclosed in the post?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "constraint_notes",
+      "step": 7,
+      "order": 12,
+      "label": "Anything else the content team must know",
+      "type": "textarea",
+      "required": false,
+      "max_length": 1200
+    }
+  ]
+}
