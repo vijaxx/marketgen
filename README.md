@@ -284,3 +284,9 @@ specific about the boundary:
 Everything else in this README — the wizard, the branching, the validation,
 resumability, tenant isolation, the stub generation pipeline, and dry-run
 publishing — was run, in this repository, before it was committed.
+
+---
+
+## License
+
+MIT.
