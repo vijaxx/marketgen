@@ -102,6 +102,37 @@ def test_assert_tenant_scoped_ignores_global_tables():
     assert_tenant_scoped("SELECT * FROM tenants WHERE slug = ?")
 
 
+def test_assert_tenant_scoped_is_not_fooled_by_a_comment_mentioning_tenant_id():
+    """A leftover TODO comment must not satisfy the guard.
+
+    The whole point of this check is to catch a developer who forgot the
+    tenant_id predicate. Before this was fixed, a comment like the one below
+    contained the literal text "tenant_id = ?" and the regex-based check
+    matched it directly against the raw SQL, waving through a query with no
+    actual WHERE-clause filter at all.
+    """
+    sql = """
+    -- TODO: add tenant_id = ? filter here eventually
+    SELECT * FROM clients
+    """
+    with pytest.raises(TenantGuardError):
+        assert_tenant_scoped(sql)
+
+
+def test_assert_tenant_scoped_is_not_fooled_by_a_block_comment():
+    sql = "/* tenant_id = ? handled upstream, trust me */ SELECT * FROM clients"
+    with pytest.raises(TenantGuardError):
+        assert_tenant_scoped(sql)
+
+
+def test_assert_tenant_scoped_still_accepts_a_real_predicate_next_to_a_comment():
+    sql = """
+    -- fetch one client
+    SELECT * FROM clients WHERE tenant_id = ? AND id = ?
+    """
+    assert_tenant_scoped(sql)  # should not raise
+
+
 def test_tenant_context_assert_owns_raises_on_mismatch():
     ctx = TenantContext(tenant_id="t1", tenant_slug="t1-slug", actor_email="x@x.com")
     with pytest.raises(TenantIsolationError):

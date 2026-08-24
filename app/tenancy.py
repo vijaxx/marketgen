@@ -43,6 +43,25 @@ _TABLE_REF = re.compile(
 )
 _TENANT_PREDICATE = re.compile(r"\btenant_id\s*=\s*[?:]", re.IGNORECASE)
 _TENANT_COLUMN_INSERT = re.compile(r"\btenant_id\b", re.IGNORECASE)
+_LINE_COMMENT = re.compile(r"--[^\n]*")
+_BLOCK_COMMENT = re.compile(r"/\*.*?\*/", re.DOTALL)
+
+
+def _strip_sql_comments(sql: str) -> str:
+    """Remove `-- ...` and `/* ... */` comments before any pattern check runs.
+
+    Without this, a leftover comment like `-- TODO: add tenant_id = ? filter`
+    satisfies _TENANT_PREDICATE by pure text match, and assert_tenant_scoped
+    waves the query through as if it were actually scoped. Since this guard's
+    whole purpose is to catch exactly that kind of developer mistake, having
+    it be fooled by a comment mentioning the missing filter defeats the point.
+
+    This does not handle a `tenant_id = ?`-shaped string *literal* inside the
+    SQL (as opposed to a comment) -- that would need a real SQL tokenizer to
+    do correctly, and is a much less likely way to accidentally satisfy the
+    pattern than a comment is.
+    """
+    return _BLOCK_COMMENT.sub(" ", _LINE_COMMENT.sub(" ", sql))
 
 
 class TenantGuardError(RuntimeError):
@@ -77,21 +96,22 @@ def assert_tenant_scoped(sql: str) -> None:
     INSERT statements are scoped by supplying a `tenant_id` column rather than a
     WHERE clause, so they are checked for the column instead.
     """
-    tables = referenced_tables(sql) & TENANT_SCOPED_TABLES
+    code = _strip_sql_comments(sql)
+    tables = referenced_tables(code) & TENANT_SCOPED_TABLES
     if not tables:
         return
 
-    stripped = sql.lstrip()
+    stripped = code.lstrip()
     is_insert = stripped[:6].lower() == "insert"
 
     if is_insert:
-        if not _TENANT_COLUMN_INSERT.search(sql):
+        if not _TENANT_COLUMN_INSERT.search(code):
             raise TenantGuardError(
                 f"INSERT into tenant-scoped table(s) {sorted(tables)} must set tenant_id"
             )
         return
 
-    if not _TENANT_PREDICATE.search(sql):
+    if not _TENANT_PREDICATE.search(code):
         raise TenantGuardError(
             f"query touching tenant-scoped table(s) {sorted(tables)} "
             "must filter on tenant_id = ?"
