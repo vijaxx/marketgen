@@ -48,6 +48,24 @@ def test_number_out_of_range_rejected():
     assert "audience_age_min" in exc_info.value.errors
 
 
+def test_number_infinity_rejected_cleanly():
+    # float("inf") parses without error, but int(float("inf")) raises
+    # OverflowError rather than ValueError, which used to escape validation
+    # entirely and crash the request instead of producing a 422.
+    with pytest.raises(qbank.ValidationError) as exc_info:
+        qbank.validate_step_answers(2, {"offer_catalog_size": "inf"}, {})
+    assert exc_info.value.errors["offer_catalog_size"] == "Expected a finite number."
+
+
+def test_number_nan_rejected_cleanly():
+    # float("nan") also parses without error; previously this leaked Python's
+    # internal "cannot convert float NaN to integer" message to the caller
+    # instead of a normal validation error.
+    with pytest.raises(qbank.ValidationError) as exc_info:
+        qbank.validate_step_answers(2, {"offer_catalog_size": "nan"}, {})
+    assert exc_info.value.errors["offer_catalog_size"] == "Expected a finite number."
+
+
 def test_single_select_invalid_option_rejected():
     with pytest.raises(qbank.ValidationError) as exc_info:
         qbank.validate_step_answers(2, {"offer_type": "not_a_real_option"}, {})

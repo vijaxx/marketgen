@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 from functools import lru_cache
 from pathlib import Path
@@ -168,6 +169,14 @@ def _validate_value(q: dict[str, Any], value: Any, context: dict[str, Any]) -> A
             numeric = float(value)
         except (TypeError, ValueError):
             raise ValueError("Expected a number.")
+        if not math.isfinite(numeric):
+            # `float("inf")`/`float("nan")` both parse successfully above, but
+            # `int(numeric)` below raises OverflowError (not ValueError) for
+            # infinities, which was escaping the ValueError handling in
+            # validate_step_answers and crashing the request with a 500
+            # instead of a clean 422. NaN was merely leaking Python's internal
+            # "cannot convert float NaN to integer" message to the caller.
+            raise ValueError("Expected a finite number.")
         if qtype == "scale" and numeric != int(numeric):
             raise ValueError("Must be a whole number.")
         numeric = int(numeric) if numeric == int(numeric) else numeric
