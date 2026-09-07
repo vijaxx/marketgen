@@ -156,6 +156,24 @@ def test_publish_endpoint_dry_run_records_attempt(client):
     assert attempts[0]["dry_run"] is True
 
 
+def test_publish_endpoint_rejects_unknown_adapter_with_400(client):
+    tenant = make_tenant(client)
+    _, session = make_client_and_session(client, tenant["api_key"])
+    complete_all_steps(client, tenant["api_key"], session["id"])
+    gen = client.post(
+        f"/api/onboarding/sessions/{session['id']}/generate", headers={"X-API-Key": tenant["api_key"]}
+    ).json()
+    post_id = gen["posts"][0]["id"]
+
+    resp = client.post(
+        "/api/publish",
+        json={"post_id": post_id, "adapter": "carrier_pigeon"},
+        headers={"X-API-Key": tenant["api_key"]},
+    )
+    assert resp.status_code == 400
+    assert "carrier_pigeon" in resp.json()["detail"]
+
+
 def test_publish_endpoint_blocks_live_adapter_without_raising_500(client):
     tenant = make_tenant(client)
     _, session = make_client_and_session(client, tenant["api_key"])

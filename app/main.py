@@ -315,7 +315,11 @@ def publish_post(
         image_ref=matching["image_ref"],
     )
 
-    publisher = get_publisher(req.adapter)
+    try:
+        publisher = get_publisher(req.adapter)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     try:
         result = publisher.publish(post)
     except LivePublishingDisabled as exc:
