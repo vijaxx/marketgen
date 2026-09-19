@@ -45,7 +45,7 @@ Run the tests:
 
 ```bash
 pytest -q
-# 69 passed
+# 70 passed
 ```
 
 Drive the API directly:
@@ -76,7 +76,7 @@ migrations/
   postgres/               Real Postgres schema + row-level security (reviewed, not run here)
   sqlite/                 The schema that actually runs locally and in tests
 n8n/                    Exported workflow JSON (importable, not executed here)
-tests/                  69 pytest tests
+tests/                  70 pytest tests
 ```
 
 Everything is one FastAPI process talking to one SQLite file. There's no
@@ -152,7 +152,7 @@ different id in the payload.
    filters on `tenant_id = ?` (or, for `INSERT`, sets a `tenant_id` column) —
    *and* asserts the `tenant_id` value itself is bound as a query parameter.
    A statement missing either raises `TenantGuardError` before it ever
-   reaches SQLite. This is what the 69 tests actually exercise.
+   reaches SQLite. This is what the 70 tests actually exercise.
 2. **Row-level security in Postgres** (`migrations/postgres/002_row_level_security.sql`,
    reviewed but not run here — no Postgres in this environment). The
    application connects as a role *without* `BYPASSRLS`; every table has
@@ -245,13 +245,14 @@ a live one returns HTTP 200 with `status: "blocked"`, not a 500 — the
 pytest -q
 ```
 
-69 tests across 5 files:
+70 tests across 5 files:
 
 - `tests/test_question_bank.py` — all 87 questions present, valid step
   assignment, no duplicate ids, `show_if` references resolve, genuine
   branching exists across ≥5 steps.
 - `tests/test_validation_and_branching.py` — per-type validation (length,
-  pattern, numeric range, select membership, multi-select bounds), branching
+  pattern, numeric range, select membership, multi-select bounds and
+  duplicate-selection rejection), branching
   visibility (hidden questions aren't required, answers to inapplicable
   questions are rejected), cross-field `gte_question` checks, progress
   accounting under branching.

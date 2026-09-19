@@ -78,6 +78,12 @@ def test_multi_select_below_min_select_rejected():
     assert "audience_genders" in exc_info.value.errors
 
 
+def test_multi_select_duplicate_values_rejected():
+    with pytest.raises(qbank.ValidationError) as exc_info:
+        qbank.validate_step_answers(1, {"brand_values": ["trust", "trust"]}, {})
+    assert exc_info.value.errors["brand_values"] == "Duplicate selections are not allowed."
+
+
 def test_multi_select_above_max_select_rejected():
     with pytest.raises(qbank.ValidationError) as exc_info:
         qbank.validate_step_answers(
