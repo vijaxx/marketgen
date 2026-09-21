@@ -10,6 +10,7 @@ never read from the request body or query string for authorization purposes.
 from __future__ import annotations
 
 import secrets
+import sqlite3
 from typing import Any, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException
@@ -124,7 +125,18 @@ class ClientCreateRequest(BaseModel):
 def create_client(
     req: ClientCreateRequest, ctx: TenantContext = Depends(get_tenant_context), db: Store = Depends(get_db)
 ) -> dict[str, Any]:
-    return db.create_client(ctx, req.name)
+    # `clients` has a (tenant_id, name) UNIQUE constraint (see
+    # migrations/sqlite/001_schema.sql) -- it's what proves tenant-scoped
+    # uniqueness rather than a global one (see test_tenant_isolation.py).
+    # Two independent clients picking the same display name within one
+    # tenant is a completely reachable, non-malicious case (e.g. resubmitting
+    # a form, or two team members onboarding "Acme" separately), so it must
+    # be a clean 409, not an unhandled sqlite3.IntegrityError bubbling up as
+    # a 500.
+    try:
+        return db.create_client(ctx, req.name)
+    except sqlite3.IntegrityError as exc:
+        raise HTTPException(status_code=409, detail="a client with this name already exists") from exc
 
 
 @app.get("/api/clients")

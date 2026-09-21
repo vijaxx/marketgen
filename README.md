@@ -45,7 +45,7 @@ Run the tests:
 
 ```bash
 pytest -q
-# 70 passed
+# 71 passed
 ```
 
 Drive the API directly:
@@ -76,7 +76,7 @@ migrations/
   postgres/               Real Postgres schema + row-level security (reviewed, not run here)
   sqlite/                 The schema that actually runs locally and in tests
 n8n/                    Exported workflow JSON (importable, not executed here)
-tests/                  70 pytest tests
+tests/                  71 pytest tests
 ```
 
 Everything is one FastAPI process talking to one SQLite file. There's no
@@ -152,7 +152,7 @@ different id in the payload.
    filters on `tenant_id = ?` (or, for `INSERT`, sets a `tenant_id` column) —
    *and* asserts the `tenant_id` value itself is bound as a query parameter.
    A statement missing either raises `TenantGuardError` before it ever
-   reaches SQLite. This is what the 70 tests actually exercise.
+   reaches SQLite. This is what the 71 tests actually exercise.
 2. **Row-level security in Postgres** (`migrations/postgres/002_row_level_security.sql`,
    reviewed but not run here — no Postgres in this environment). The
    application connects as a role *without* `BYPASSRLS`; every table has
@@ -245,7 +245,7 @@ a live one returns HTTP 200 with `status: "blocked"`, not a 500 — the
 pytest -q
 ```
 
-70 tests across 5 files:
+71 tests across 5 files:
 
 - `tests/test_question_bank.py` — all 87 questions present, valid step
   assignment, no duplicate ids, `show_if` references resolve, genuine
@@ -260,7 +260,9 @@ pytest -q
   creation, per-step submission and advancement, 422 on invalid submission,
   **resume** (fetch a session after a partial submission and see prior
   answers/step intact), the full 7-step happy path completing the session,
-  generation correctly gated on completion, auth rejection.
+  generation correctly gated on completion, auth rejection, a duplicate
+  client name for one tenant returning a clean 409 instead of a raw
+  `sqlite3.IntegrityError`.
 - `tests/test_tenant_isolation.py` — see [above](#multi-tenant-isolation).
 - `tests/test_generation_and_publishing.py` — stub provider determinism,
   per-channel variation, banned-word redaction, regulatory disclaimer

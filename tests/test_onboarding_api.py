@@ -121,6 +121,20 @@ def test_generation_requires_completed_onboarding(client):
     assert resp.status_code == 409
 
 
+def test_duplicate_client_name_returns_409_not_500(client):
+    """clients has a (tenant_id, name) UNIQUE constraint; creating a second
+    client with the same name for the same tenant must be a clean 409, not
+    an unhandled sqlite3.IntegrityError bubbling up as a 500."""
+    tenant = make_tenant(client)
+    headers = {"X-API-Key": tenant["api_key"]}
+
+    first = client.post("/api/clients", json={"name": "Acme Retail"}, headers=headers)
+    assert first.status_code == 201, first.text
+
+    dupe = client.post("/api/clients", json={"name": "Acme Retail"}, headers=headers)
+    assert dupe.status_code == 409, dupe.text
+
+
 def test_missing_api_key_rejected(client):
     resp = client.get("/api/clients")
     assert resp.status_code == 401
